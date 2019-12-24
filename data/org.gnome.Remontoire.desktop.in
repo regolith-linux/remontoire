@@ -1,0 +1,7 @@
+[Desktop Entry]
+Name=remontoire
+Exec=remontoire
+Terminal=false
+Type=Application
+Categories=GTK;
+StartupNotify=true

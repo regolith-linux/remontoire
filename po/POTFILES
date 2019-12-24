@@ -1,0 +1,5 @@
+data/org.gnome.Remontoire.desktop.in
+data/org.gnome.Remontoire.appdata.xml.in
+data/org.gnome.Remontoire.gschema.xml
+src/window.uisrc/main.vala
+src/window.vala
