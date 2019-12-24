@@ -1,5 +1,7 @@
 remontoire_sources = [
-  'main.vala'
+  'main.vala',
+  'window.vala',
+  'helper.vala'
 ]
 
 remontoire_deps = [
