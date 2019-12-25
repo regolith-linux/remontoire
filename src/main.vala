@@ -1,4 +1,6 @@
-
+/**
+ * Application entry-point.
+ */
 int main (string[] args) {
 	var app = new Gtk.Application ("org.regolith.remontoire", ApplicationFlags.FLAGS_NONE);
 	app.activate.connect (() => {
@@ -12,7 +14,8 @@ int main (string[] args) {
 
 		win.show_all ();
 
-        var padding = 5;
+        const int padding = 5;
+
 		win.get_size(out width, out height);
         var x_position = geometry.width - width - padding;
         var y_position = 0 + padding;
