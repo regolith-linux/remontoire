@@ -65,6 +65,13 @@ namespace Remontoire {
 			add_item(store, action_iter, out binding_iter, "Resize Window", "k j h l");
 			add_item(store, action_iter, out binding_iter, "Exit Resize Mode", "Escape");
 
+            add_category(store, out action_iter, "Notifications");
+
+            add_item(store, action_iter, out binding_iter, "View Notifications", "<Super> n");
+            add_item(store, action_iter, out binding_iter, "Delete Notification", "Delete");
+            add_item(store, action_iter, out binding_iter, "Delete All Notifications", "<Shift> Delete");
+            add_item(store, action_iter, out binding_iter, "Exit Notifications", "Escape");
+            
 			add_category(store, out action_iter, "Other");
 
 			add_item(store, action_iter, out binding_iter, "Kill Focused Window", "<Super><Shift> q");
