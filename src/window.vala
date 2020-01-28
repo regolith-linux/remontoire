@@ -16,6 +16,7 @@ namespace Remontoire {
             var view = new TreeView ();
             setup_treeview (view);
             add (view);
+
             this.destroy.connect (Gtk.main_quit);
 		}
 
@@ -36,6 +37,7 @@ namespace Remontoire {
             add_item(store, action_iter, out binding_iter, "Application", "<Super> Space");
             add_item(store, action_iter, out binding_iter, "Command", "<Super><Shift> Space");
             add_item(store, action_iter, out binding_iter, "Control Center", "<Super> c");
+            add_item(store, action_iter, out binding_iter, "File Browser", "<Super><Shift> n");
 
             add_category(store, out action_iter, "Navigate");
 
@@ -47,22 +49,22 @@ namespace Remontoire {
 			add_item(store, action_iter, out binding_iter, "Previous Workspace", "<Super><Shift> Tab");
 			add_item(store, action_iter, out binding_iter, "Next Workspace", "<Super> Tab");
 
-
 			add_category(store, out action_iter, "Modify");
 
 			add_item(store, action_iter, out binding_iter, "Next Window Orientation", "<Super> Backspace");
-			add_item(store, action_iter, out binding_iter, "Gaps Between Windows", "<Super> + -");
 			add_item(store, action_iter, out binding_iter, "Window Position", "<Super><Shift> ↑ ↓ ← →");
 			add_item(store, action_iter, out binding_iter, "Window Position", "<Super><Shift> k j h l");
 			add_item(store, action_iter, out binding_iter, "Workspace of Window", "<Super><Shift> 0…9");
 			add_item(store, action_iter, out binding_iter, "Window Fullscreen Toggle", "<Super> f");
 			add_item(store, action_iter, out binding_iter, "Window Floating Toggle", "<Super><Shift> f");
+			add_item(store, action_iter, out binding_iter, "Bar Toggle", "<Super> i");
 
 			add_category(store, out action_iter, "Resize");
 
 			add_item(store, action_iter, out binding_iter, "Enter Resize Mode", "<Super> r");
 			add_item(store, action_iter, out binding_iter, "Resize Window", "↑ ↓ ← →");
 			add_item(store, action_iter, out binding_iter, "Resize Window", "k j h l");
+			add_item(store, action_iter, out binding_iter, "Gaps Between Windows", "+ -");
 			add_item(store, action_iter, out binding_iter, "Exit Resize Mode", "Escape");
 
             add_category(store, out action_iter, "Notifications");
@@ -75,6 +77,8 @@ namespace Remontoire {
 			add_category(store, out action_iter, "Other");
 
 			add_item(store, action_iter, out binding_iter, "Kill Focused Window", "<Super><Shift> q");
+			add_item(store, action_iter, out binding_iter, "Save Layout", "<Super> ,");
+			add_item(store, action_iter, out binding_iter, "Load Layout", "<Super> .");
 			add_item(store, action_iter, out binding_iter, "Lock Screen", "<Super> Escape");
 			add_item(store, action_iter, out binding_iter, "Logout", "<Super><Shift> e");
 			add_item(store, action_iter, out binding_iter, "Suspend Computer", "<Super><Shift> s");
