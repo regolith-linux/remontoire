@@ -46,8 +46,8 @@ namespace Remontoire {
 			add_item(store, action_iter, out binding_iter, "Relative Window", "<Super> k j h l");
 			add_item(store, action_iter, out binding_iter, "Workspace 0 - 9", "<Super> 0…9");
 			add_item(store, action_iter, out binding_iter, "Workspace 10 - 19", "<Super><Ctrl> 0…9");
-			add_item(store, action_iter, out binding_iter, "Previous Workspace", "<Super><Shift> Tab");
-			add_item(store, action_iter, out binding_iter, "Next Workspace", "<Super> Tab");
+			add_item(store, action_iter, out binding_iter, "Next Workspace", "<Super><Alt> →");
+			add_item(store, action_iter, out binding_iter, "Previous Workspace", "<Super><Alt> ←");
 
 			add_category(store, out action_iter, "Modify");
 
