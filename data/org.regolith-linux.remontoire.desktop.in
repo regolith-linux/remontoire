@@ -1,7 +1,9 @@
 [Desktop Entry]
-Name=remontoire
+Name=Remontoire
 Exec=remontoire
 Terminal=false
 Type=Application
 Categories=GTK;
 StartupNotify=true
+Icon=dialog-information
+Keywords=shortcuts,keybindings

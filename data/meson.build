@@ -1,6 +1,6 @@
 desktop_file = i18n.merge_file(
-  input: 'org.gnome.Remontoire.desktop.in',
-  output: 'org.gnome.Remontoire.desktop',
+  input: 'org.regolith-linux.remontoire.desktop.in',
+  output: 'org.regolith-linux.remontoire.desktop',
   type: 'desktop',
   po_dir: '../po',
   install: true,
@@ -15,8 +15,8 @@ if desktop_utils.found()
 endif
 
 appstream_file = i18n.merge_file(
-  input: 'org.gnome.Remontoire.appdata.xml.in',
-  output: 'org.gnome.Remontoire.appdata.xml',
+  input: 'org.regolith-linux.remontoire.appdata.xml.in',
+  output: 'org.regolith-linux.remontoire.appdata.xml',
   po_dir: '../po',
   install: true,
   install_dir: join_paths(get_option('datadir'), 'appdata')
@@ -29,7 +29,7 @@ if appstream_util.found()
   )
 endif
 
-install_data('org.gnome.Remontoire.gschema.xml',
+install_data('org.regolith-linux.remontoire.gschema.xml',
   install_dir: join_paths(get_option('datadir'), 'glib-2.0/schemas')
 )
 

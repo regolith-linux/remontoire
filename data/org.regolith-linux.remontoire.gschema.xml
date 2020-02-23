@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schemalist gettext-domain="remontoire">
+	<schema id="org.regolith-linux.remontoire" path="/org/regolith-linux/remontoire/">
+	  <key name="collapsed-category-path-ids" type="s">
+      <default>""</default>
+      <summary>Categories that are collapsed.</summary>
+      <description>
+        This value is used to store the layout of the shortcuts window across invocations.
+      </description>
+    </key>
+	</schema>
+</schemalist>

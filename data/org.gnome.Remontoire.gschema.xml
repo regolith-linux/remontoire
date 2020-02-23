@@ -1,5 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<schemalist gettext-domain="remontoire">
-	<schema id="org.gnome.Remontoire" path="/org/gnome/Remontoire/">
-	</schema>
-</schemalist>
