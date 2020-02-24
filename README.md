@@ -9,7 +9,7 @@ Remontoire is in testing with the goal of being a general-purpose shortcut viewe
 ## Future Work
 
 * Nicer UI for keybindings using keys similar to the Gtk+ Shortcuts dialog.
-* ~~Dynamically read and parse i3-wm keybindings rather than hardcode.
+* ~~Dynamically read and parse i3-wm keybindings rather than hardcode.~~
 * Allow user to change position on screen.
 
 # Usage
