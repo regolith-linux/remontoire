@@ -10,7 +10,7 @@ Build-Depends: debhelper (>= 10),
                libgee-0.8-dev,
                libgee-0.8-2,
                gir1.2-gee-0.8,
-               libgrelier-dev      
+               libjsonrpc-glib-1.0-dev  
 Standards-Version: 4.1.2
 Homepage: https://github.com/regolith-linux/remontoire
 
@@ -19,5 +19,6 @@ Architecture: any
 Depends: 
   ${shlibs:Depends}, 
   ${misc:Depends},
-  libgrelier-dev
+  libgee-0.8-dev,
+  libjsonrpc-glib-1.0-dev
 Description: Regolith shortcut dialog

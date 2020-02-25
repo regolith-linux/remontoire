@@ -1,4 +1,4 @@
-remontoire (1.1.0-1ubuntu1~ppa2) eoan; urgency=medium
+remontoire (1.1.0-1ubuntu1~ppa3) eoan; urgency=medium
 
   * Dynamic keybindings from i3 over IPC.
   * UI Fixes

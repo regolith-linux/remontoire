@@ -41,7 +41,6 @@ int main (string[] args) {
                 window.move(x_position, y_position);
                 lastWindowWidth = width;
                 lastWindowHeight = height;
-                print(@"resized $height\n");
             }
         });
         
