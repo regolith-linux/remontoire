@@ -1,3 +1,9 @@
+remontoire (1.1.1-1ubuntu1~ppa1) eoan; urgency=medium
+
+  * Fold grelier into package to avoid packaging complexity. 
+
+ -- Regolith Linux <regolith.linux@gmail.com>  Tue, 25 Feb 2020 08:21:34 -0800
+
 remontoire (1.1.0-1ubuntu1~ppa3) eoan; urgency=medium
 
   * Dynamic keybindings from i3 over IPC.
