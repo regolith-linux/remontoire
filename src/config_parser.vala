@@ -37,7 +37,7 @@ public class ConfigParser {
 
     if (lines == null || lines.length == 0) return Map.empty<string, ArrayList<Keybinding>>();;
 
-    var config_map = new HashMap<string, ArrayList<Keybinding>>();
+    var config_map = new TreeMap<string, ArrayList<Keybinding>>();
 
     foreach (unowned string line in lines) {
       string trimmedLine = line.strip();
