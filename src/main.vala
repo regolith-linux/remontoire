@@ -14,7 +14,7 @@ int main (string[] args) {
         var window = app.active_window;
         if (window == null) {
             try {
-                window = new Remontoire.Window (app, new ConfigParser(args[1]));
+                window = new Remontoire.SliderWindow (app, new ConfigParser(args[1]));
                 window.icon = IconTheme.get_default().load_icon("dialog-information", 48, 0);
             } catch (PARSE_ERROR ex) {
                 error("Failed to start: " + ex.message);

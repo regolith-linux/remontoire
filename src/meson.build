@@ -5,6 +5,7 @@ grelier_sources = [
 remontoire_sources = [
   'main.vala',
   'window.vala',
+  'slider_window.vala',
   'helper.vala',
   'config_parser.vala'
 ]
