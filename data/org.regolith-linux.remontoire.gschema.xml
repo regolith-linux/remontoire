@@ -8,5 +8,12 @@
         This value is used to store the layout of the shortcuts window across invocations.
       </description>
     </key>
+    <key name="expanded-category-path-ids" type="s">
+      <default>""</default>
+      <summary>Categories that are expanded.</summary>
+      <description>
+        This value is used to store the layout of the shortcuts window across invocations.
+      </description>
+    </key>
 	</schema>
 </schemalist>

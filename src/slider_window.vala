@@ -16,7 +16,8 @@ namespace Remontoire {
 
             var config = configParser.parse();
             var settings = new GLib.Settings("org.regolith-linux.remontoire");
-            var collapsedPathIds = parsePaths(settings.get_string("collapsed-category-path-ids"));
+            stdout.printf ("loading paths %s\n", settings.get_string("expanded-category-path-ids"));
+            var expandedCategories = parsePaths(settings.get_string("expanded-category-path-ids"));
         
             var flowbox = new FlowBox();
             flowbox.max_children_per_line = 1;
@@ -24,48 +25,36 @@ namespace Remontoire {
             flowbox.set_orientation(Orientation.HORIZONTAL);
             this.add(flowbox);
 
-            //var view = new TreeView ();
-            setup_treeview (flowbox, config, settings, collapsedPathIds);
-            //add (view);
-            //view.get_selection().unselect_all();
+            setup_treeview (flowbox, config, settings, expandedCategories);
 
             this.destroy.connect (Gtk.main_quit);
         }
 
-        private void setup_treeview (Gtk.Container parent, Map<string, ArrayList<Keybinding>> keybindings, GLib.Settings settings, Set<string> collapsedPathIds) {       
+        private void setup_treeview (Gtk.Container parent, Map<string, ArrayList<Keybinding>> keybindings, GLib.Settings settings, Set<string> expandedCategories) {       
 
             foreach (var categoryEntry in keybindings.entries) {
-                Gtk.Expander action_iter;
-                add_category(parent, out action_iter, categoryEntry.key);
+                Gtk.Expander expander;
+                add_category(parent, out expander, categoryEntry.key);
 
-                var vbox = new Box(Gtk.Orientation.VERTICAL, 5);
-                vbox.set_spacing(5);
-                action_iter.add(vbox);
+                expander.expanded = expandedCategories.contains(categoryEntry.key);
+                expander.activate.connect((expander) => {
+                    if (expander.expanded == false) {
+                        expandedCategories.add(expander.label);
+                    } else {                        
+                        expandedCategories.remove(expander.label);
+                    }
+                    savePaths(expandedCategories, settings);
+                });
+
+                var vbox = new Box(Gtk.Orientation.VERTICAL, 0);
+                vbox.set_spacing(0);
+                expander.add(vbox);
 
                 foreach (var keybinding in categoryEntry.value) {
                     Gtk.Label binding_iter;
                     add_item(vbox, out binding_iter, keybinding.label, keybinding.spec);
                 }
             }
-
-            /*
-            view.expand_all ();
-            foreach (var pathStr in collapsedPathIds) {
-                if (pathStr.strip().length > 0) {
-                    view.collapse_row(new TreePath.from_string(pathStr));
-                }
-            }
-
-            view.row_collapsed.connect((iter, path) => { 
-                collapsedPathIds.add(path.to_string());
-                savePaths(collapsedPathIds, settings);
-            });
-
-            view.row_expanded.connect((iter, path) => { 
-                collapsedPathIds.remove(path.to_string());
-                savePaths(collapsedPathIds, settings);
-            });
-            */
         }
 
         private static void add_category(Gtk.Container window, out Gtk.Expander iter, string label) {
@@ -104,7 +93,8 @@ namespace Remontoire {
                 pathSetStr += pathstr;
                 pathSetStr += ",";
             }
-            settings.set_string("collapsed-category-path-ids", pathSetStr);
+            settings.set_string("expanded-category-path-ids", pathSetStr);
+            stdout.printf ("saved paths %s\n", pathSetStr);
         }
     }
 }
