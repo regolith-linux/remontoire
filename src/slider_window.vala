@@ -16,25 +16,25 @@ namespace Remontoire {
 
             var config = configParser.parse();
             var settings = new GLib.Settings("org.regolith-linux.remontoire");
-            stdout.printf ("loading paths %s\n", settings.get_string("expanded-category-path-ids"));
             var expandedCategories = parsePaths(settings.get_string("expanded-category-path-ids"));
         
             var flowbox = new FlowBox();
             flowbox.max_children_per_line = 1;
             flowbox.min_children_per_line = 1;
             flowbox.set_orientation(Orientation.HORIZONTAL);
+            flowbox.get_style_context().add_class("window");
             this.add(flowbox);
 
-            setup_treeview (flowbox, config, settings, expandedCategories);
+            build_widgets (flowbox, config, settings, expandedCategories);
 
             this.destroy.connect (Gtk.main_quit);
         }
 
-        private void setup_treeview (Gtk.Container parent, Map<string, ArrayList<Keybinding>> keybindings, GLib.Settings settings, Set<string> expandedCategories) {       
+        private void build_widgets (Gtk.Container container, Map<string, ArrayList<Keybinding>> keybindings, GLib.Settings settings, Set<string> expandedCategories) {       
 
             foreach (var categoryEntry in keybindings.entries) {
                 Gtk.Expander expander;
-                add_category(parent, out expander, categoryEntry.key);
+                add_category(container, out expander, categoryEntry.key);
 
                 expander.expanded = expandedCategories.contains(categoryEntry.key);
                 expander.activate.connect((expander) => {
@@ -46,25 +46,104 @@ namespace Remontoire {
                     savePaths(expandedCategories, settings);
                 });
 
-                var vbox = new Box(Gtk.Orientation.VERTICAL, 0);
-                vbox.set_spacing(0);
-                expander.add(vbox);
+                var keybinding_container = new Box(Gtk.Orientation.VERTICAL, 0);
+                keybinding_container.set_spacing(0);
+                expander.add(keybinding_container);
 
                 foreach (var keybinding in categoryEntry.value) {
-                    Gtk.Label binding_iter;
-                    add_item(vbox, out binding_iter, keybinding.label, keybinding.spec);
+                    add_item(keybinding_container, keybinding.label, keybinding.spec);
                 }
             }
         }
 
-        private static void add_category(Gtk.Container window, out Gtk.Expander iter, string label) {
-            iter = new Gtk.Expander (label);
-            window.add (iter);
+        private static void add_category(Gtk.Container container, out Gtk.Expander expander, string label) {
+            expander = new Gtk.Expander (label);
+            expander.get_style_context().add_class("category");
+            container.add (expander);
         }
 
-        private static void add_item(Gtk.Container parent_iter, out Gtk.Label iter, string action, string keybinding) {
-            iter = new Gtk.Label (action + ": " + keybinding);
-            parent_iter.add (iter);
+        private static void add_item(Gtk.Container container, string action, string keybinding) {
+            var keybinding_root = new Box(Gtk.Orientation.HORIZONTAL, 0);
+            keybinding_root.get_style_context().add_class("detail");
+
+            render_keybinding(keybinding_root, action, keybinding);
+            container.add (keybinding_root);
+        }
+
+        /** 
+         * Generate the keybinding composite label.
+        */
+        private static void render_keybinding(Gtk.Box parent, string action, string keybinding) {
+            var action_label = new Gtk.Label(action);
+            action_label.get_style_context().add_class("action");
+            action_label.halign = START;
+            parent.pack_start(action_label);
+
+            var keys = parse_keybinding(keybinding);
+            keys.reverse();
+
+            Gtk.Label keybinding_label;
+            foreach(var key in keys) {
+                if (key.has_prefix("<") && key.has_suffix(">")) {
+                    keybinding_label = new Gtk.Label(key.substring(1, key.length - 2));
+                    keybinding_label.get_style_context().add_class("metakey");
+                } else if (key.contains("..")) {
+                    keybinding_label = new Gtk.Label(key);
+                    keybinding_label.get_style_context().add_class("rangekey");
+                } else {
+                    keybinding_label = new Gtk.Label(key);
+                    keybinding_label.get_style_context().add_class("key");
+                }
+                keybinding_label.halign = END;
+                parent.pack_end(keybinding_label, false, false, 0);
+            }
+        }
+
+        /** 
+         * Ths method takes in a string and produces a list of strings. Ex:
+         * <super><shift>a b c -> <super>, <shift>, a, b, c
+        */
+        private static GLib.List<string> parse_keybinding(string raw_keybinding) {
+            var tokens = new GLib.List<string>();
+            var str_builder = new StringBuilder();
+
+            unichar c;
+            for (int i = 0; raw_keybinding.get_next_char (ref i, out c);) {
+                switch(c) {
+                    case '<':
+                        if (str_builder.len > 0) {
+                            string token = str_builder.str;
+                            tokens.append(token);
+                            str_builder.erase(0);
+                        }
+                        str_builder.append(c.to_string ());
+                        break;
+                    case '>':
+                        str_builder.append(c.to_string ());
+                        string token = str_builder.str;
+                        tokens.append(token);
+                        str_builder.erase(0);
+                        break;
+                    case ' ': 
+                        if (str_builder.len > 0) {
+                            string token = str_builder.str;
+                            tokens.append(token);
+                            str_builder.erase(0);
+                        }
+                        break;
+                    default:
+                        str_builder.append(c.to_string ());
+                        break;
+                }
+            }
+
+            if (str_builder.len > 0) {
+                string token = str_builder.str;
+                tokens.append(token);
+                str_builder.erase(0);
+            }
+
+            return tokens;
         }
 
         private static void style_window(Gtk.Window window) {
@@ -94,7 +173,6 @@ namespace Remontoire {
                 pathSetStr += ",";
             }
             settings.set_string("expanded-category-path-ids", pathSetStr);
-            stdout.printf ("saved paths %s\n", pathSetStr);
         }
     }
 }

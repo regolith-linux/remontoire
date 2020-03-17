@@ -24,6 +24,12 @@ remontoire_deps = [
   dependency('gee-0.8')
 ]
 
+remontoire_sources += import( 'gnome' ).compile_resources(
+    'project-resources',
+    '../data/style.xml',
+    source_dir: '../data',
+)
+
 gnome = import('gnome')
 
 executable('remontoire', [grelier_sources, remontoire_sources],

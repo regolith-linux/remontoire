@@ -14,8 +14,11 @@ int main (string[] args) {
         var window = app.active_window;
         if (window == null) {
             try {
-                window = new Remontoire.SliderWindow (app, new ConfigParser(args[1]));
-                window.icon = IconTheme.get_default().load_icon("dialog-information", 48, 0);
+                window = new Remontoire.SliderWindow (app, new ConfigParser(args[1]));                
+
+                Gtk.CssProvider css_provider = new Gtk.CssProvider ();
+                css_provider.load_from_resource ("/application/style/style.css");
+                Gtk.StyleContext.add_provider_for_screen (Gdk.Screen.get_default (), css_provider, Gtk.STYLE_PROVIDER_PRIORITY_USER);    
             } catch (PARSE_ERROR ex) {
                 error("Failed to start: " + ex.message);
             } catch (GLib.Error ex) {

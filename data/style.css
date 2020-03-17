@@ -1,0 +1,65 @@
+.window {
+  margin: 4px;
+}
+
+*:selected {
+  background-color: @theme_bg_color;
+  color: @theme_text_color;
+}
+
+.category {
+  padding-top: 2px;
+  padding-bottom: 2px;
+  font-weight: bold;
+  font-size: .95em;
+  color: @theme_unfocused_fg_color;
+}
+
+.action {
+  padding-right: 10px;
+  padding-left: 15px;
+  font-weight: lighter;
+}
+
+.metakey {
+  font-family: monospace;
+  font-weight: normal;
+  background-color: @theme_selected_fg_color;
+  border: 1px solid;
+  border-color: @insensitive_base_color;
+  color: @theme_unfocused_fg_color;
+
+  padding: 2px;
+  margin: 2px;
+  font-size: .9em;
+}
+
+.rangekey {
+  font-family: monospace;
+  font-weight: normal;
+  background-color: @theme_selected_fg_color;
+  border: 1px solid;
+  border-color: @insensitive_base_color;
+  color: @theme_unfocused_fg_color;
+
+  padding: 2px;
+  margin: 2px;
+  font-size: .9em;
+}
+
+.key {
+  font-family: monospace;
+  font-weight: normal;
+  background-color: @theme_selected_fg_color;
+  border: 1px solid;
+  border-color: @insensitive_base_color;
+  color: @theme_unfocused_fg_color;
+
+  padding: 2px;
+  margin: 2px;
+  font-size: .9em;
+}
+
+.detail {
+  margin: 2px;
+}
