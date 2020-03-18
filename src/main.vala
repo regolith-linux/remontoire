@@ -27,24 +27,22 @@ int main (string[] args) {
         }       
         
         int lastWindowWidth = 0, lastWindowHeight = 0;
+        var geometry = Helper.getScreenSizeForWindow(window);
 
-        window.check_resize.connect (() => {
+        window.configure_event.connect (() => {
             const int padding = 6;
             int height, width;
 
             window.get_size(out width, out height);   
             
-            // Check to see if window width has changed, if so, reposition.
-            if (width != lastWindowWidth || height != lastWindowHeight) {
-                var geometry = Helper.getScreenSizeForWindow(window);
+            var x_position = geometry.width - width - padding;
+            var y_position = ((geometry.height - height) / 2);
 
-                var x_position = geometry.width - width - padding;
-                var y_position = ((geometry.height - height) / 2);
+            window.move(x_position, y_position);
+            lastWindowWidth = width;
+            lastWindowHeight = height;                            
 
-                window.move(x_position, y_position);
-                lastWindowWidth = width;
-                lastWindowHeight = height;
-            }
+            return false;
         });
         
         window.show_all ();                        
