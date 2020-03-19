@@ -155,6 +155,7 @@ namespace Remontoire {
             window.set_deletable(false);
             window.set_accept_focus(false);
             window.set_type_hint(SPLASHSCREEN);
+            window.stick();
         }
 
         private Set<string> parsePaths(string pathList) {
