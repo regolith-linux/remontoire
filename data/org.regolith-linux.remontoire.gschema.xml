@@ -15,5 +15,26 @@
         This value is used to store the layout of the shortcuts window across invocations.
       </description>
     </key>
+    <key name="window-position" type="s">
+      <default>"east"</default>
+      <summary>Window position</summary>
+      <description>
+        The position to render the window on start. Possible values: north, south, east (default), west.
+      </description>
+    </key>
+    <key name="window-padding-width" type="i">
+      <default>6</default>
+      <summary>Window padding width</summary>
+      <description>
+        Number of horizontal pixels between the window and the screen's closest edge(s).
+      </description>
+    </key>
+    <key name="window-padding-height" type="i">
+      <default>6</default>
+      <summary>Window padding height</summary>
+      <description>
+        Number of vertical pixels between the window and the screen's closest edge(s).
+      </description>
+    </key>
 	</schema>
 </schemalist>
