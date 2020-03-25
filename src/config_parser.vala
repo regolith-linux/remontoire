@@ -23,6 +23,7 @@ public class ConfigParser {
   private const string REMONTOIRE_LINE_WRAPPER = "##";
   private const string REMONTIORE_PARAM_DELIMITER = "//";
   private const int PARAMETER_COUNT = 3;
+  private const int MIN_LINE_LENGTH = 13; // ##x//y//z//##
   private string socket_address;
 
   public ConfigParser(string i3SocketAddress) {
@@ -52,14 +53,21 @@ public class ConfigParser {
   }
 
   private bool lineMatch(string line) {
-    return line.has_prefix(REMONTOIRE_LINE_WRAPPER) && 
-           line.has_suffix(REMONTOIRE_LINE_WRAPPER) &&
+
+    return line.length > MIN_LINE_LENGTH &&
+           line.has_prefix(REMONTOIRE_LINE_WRAPPER) && 
+           line.substring(REMONTOIRE_LINE_WRAPPER.length + 1).contains(REMONTOIRE_LINE_WRAPPER) &&
            line.contains(REMONTIORE_PARAM_DELIMITER);
   }
 
+  /** 
+   * ## category // action // keybinding ## anything else
+  */
   private void parseLine(string line, Map<string, ArrayList<Keybinding>> configMap) throws PARSE_ERROR.BAD_PARAM_MATCH {
-    // Remove wrapper
-    string valueList = line.substring(REMONTOIRE_LINE_WRAPPER.length, line.length - (REMONTOIRE_LINE_WRAPPER.length * 2) - 1);
+    // Find end of machine-parsable section of line.
+    int termSequenceIndex = line.index_of("##", 3);
+    // Extract machine-parsable section of line.
+    string valueList = line.substring(REMONTOIRE_LINE_WRAPPER.length, termSequenceIndex - REMONTOIRE_LINE_WRAPPER.length);
     // Tokenize parameters
     string[] values = valueList.split(REMONTIORE_PARAM_DELIMITER);
 
