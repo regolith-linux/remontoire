@@ -4,14 +4,17 @@ delegate string read_config(string config_descriptor) throws GLib.Error;
 
 static string? socket = null;
 static bool version = false;
-static string? directory = null;
+static string? config_file = null;
+static string? style_file = null;
 const GLib.OptionEntry[] options = {
     // --version
     { "version", 'v', 0, OptionArg.NONE, ref version, "Display version number", null },
     // --socket SOCKETPATH || -s SOCKETPATH
     { "socket", 's', 0, OptionArg.STRING, ref socket, "Socket path for i3", "<Socket URI>" },
     // --file FIlENAME || -f FILENAME
-    { "file", 'c', 0, OptionArg.FILENAME, ref directory, "Config file", "<Path to config file>" },
+    { "file", 'c', 0, OptionArg.FILENAME, ref config_file, "Config file", "<Path to config file>" },
+    // --style FIlENAME || -t FILENAME
+    { "style", 't', 0, OptionArg.FILENAME, ref style_file, "CSS file", "<Path to style file>" },
     // list terminator
     { null }
 };
@@ -33,7 +36,7 @@ int main (string[] args) {
         return 0;
     }
 
-    if ((socket != null && directory != null) || (socket == null && directory == null)) {
+    if ((socket != null && config_file != null) || (socket == null && config_file == null)) {
         printerr ("Must specify either socket path or file path.\n");
         printerr ("Run '%s --help' to see a full list of available command line options.\n", args[0]);
         return 1;
@@ -46,7 +49,7 @@ int main (string[] args) {
         config_descriptor = socket;
     } else {
         config_reader = read_file_config;
-        config_descriptor = directory;
+        config_descriptor = config_file;
     }
 
     var app = new Gtk.Application ("org.regolith.remontoire", ApplicationFlags.FLAGS_NONE);
@@ -60,7 +63,18 @@ int main (string[] args) {
                 window = new Remontoire.SliderWindow (app, configParser.parse(), settings);
 
                 Gtk.CssProvider css_provider = new Gtk.CssProvider ();
-                css_provider.load_from_resource ("/application/style/style.css");
+                if (style_file == null) {
+                    css_provider.load_from_resource ("/application/style/style.css");
+                } else {
+                    var file = File.new_for_path (style_file);
+
+                    if (!file.query_exists ()) {
+                        printerr ("File '%s' doesn't exist.\n", file.get_path ());
+                        Process.exit (1);
+                    }
+                    css_provider.load_from_file (file);
+                }
+
                 Gtk.StyleContext.add_provider_for_screen (Gdk.Screen.get_default (), css_provider, Gtk.STYLE_PROVIDER_PRIORITY_USER);
             } catch (PARSE_ERROR ex) {
                 error("Failed to start: " + ex.message);
@@ -114,14 +128,14 @@ int main (string[] args) {
 
 /**
  *  Parse config from socket connection to i3.
- */ 
+ */
 string read_socket_config(string socket_address) throws GLib.Error {
     var client = new Grelier.Client(socket_address);
 
     return client.getConfig().config;
 }
 
-/** 
+/**
  * Parse config from file path.
  */
 string read_file_config(string file_path) throws GLib.Error {
@@ -135,10 +149,10 @@ string read_file_config(string file_path) throws GLib.Error {
     var dis = new DataInputStream (file.read ());
     string line;
     var str_builder = new StringBuilder();
-    
+
     while ((line = dis.read_line (null)) != null) {
         str_builder.append(line);
-        str_builder.append("\n");        
+        str_builder.append("\n");
     }
 
     return str_builder.str;
