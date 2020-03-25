@@ -23,18 +23,15 @@ public class ConfigParser {
   private const string REMONTOIRE_LINE_WRAPPER = "##";
   private const string REMONTIORE_PARAM_DELIMITER = "//";
   private const int PARAMETER_COUNT = 3;
-  private const int MIN_LINE_LENGTH = 13; // ##x//y//z//##
-  private string socket_address;
+  private const int MIN_LINE_LENGTH = 13; // "##x//y//z//##".length
+  private string config;
 
-  public ConfigParser(string i3SocketAddress) {
-    socket_address = i3SocketAddress;
+  public ConfigParser(string config) {
+    this.config = config;
   }
 
-  public Map<string, ArrayList<Keybinding>> parse() throws PARSE_ERROR, GLib.Error, Grelier.I3_ERROR {
-    var client = new Grelier.Client(socket_address);
-
-    string i3Config = client.getConfig().config;
-    string[] lines = i3Config.split("\n");
+  public Map<string, ArrayList<Keybinding>> parse() throws PARSE_ERROR, GLib.Error, Grelier.I3_ERROR {    
+    string[] lines = config.split("\n");
 
     if (lines == null || lines.length == 0) return Map.empty<string, ArrayList<Keybinding>>();;
 

@@ -9,13 +9,11 @@ namespace Remontoire {
      */
     public class SliderWindow : Gtk.Window {
 
-        public SliderWindow (Gtk.Application app, ConfigParser configParser, GLib.Settings settings) throws PARSE_ERROR, GLib.Error, Grelier.I3_ERROR {
+        public SliderWindow (Gtk.Application app, Map<string, ArrayList<Keybinding>> config, GLib.Settings settings) throws PARSE_ERROR, GLib.Error, Grelier.I3_ERROR {
             Object (application: app);
 
             style_window(this);
 
-            var config = configParser.parse();
-            
             var expandedCategories = parsePaths(settings.get_string("expanded-category-path-ids"));
         
             var flowbox = new FlowBox();
