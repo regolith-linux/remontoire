@@ -21,6 +21,12 @@
   font-weight: lighter;
 }
 
+.error {
+  padding: 15px;
+  font-size: 1.2em;
+  font-weight: bold;
+}
+
 .metakey {
   font-family: monospace;
   font-weight: normal;

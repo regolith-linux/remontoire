@@ -14,16 +14,22 @@ namespace Remontoire {
 
             style_window(this);
 
-            var expandedCategories = parsePaths(settings.get_string("expanded-category-path-ids"));
-        
-            var flowbox = new FlowBox();
-            flowbox.max_children_per_line = 1;
-            flowbox.min_children_per_line = 1;
-            flowbox.set_orientation(Orientation.HORIZONTAL);
-            flowbox.get_style_context().add_class("window");
-            this.add(flowbox);
+            if (config.size > 0) {
+                var expandedCategories = parsePaths(settings.get_string("expanded-category-path-ids"));
+            
+                var flowbox = new FlowBox();
+                flowbox.max_children_per_line = 1;
+                flowbox.min_children_per_line = 1;
+                flowbox.set_orientation(Orientation.HORIZONTAL);
+                flowbox.get_style_context().add_class("window");
+                this.add(flowbox);
 
-            build_widgets (flowbox, config, settings, expandedCategories);
+                build_widgets (flowbox, config, settings, expandedCategories);
+            } else {
+                var warning_label = new Gtk.Label("No Keybindings");
+                warning_label.get_style_context().add_class("error");
+                this.add(warning_label);
+            }
 
             this.destroy.connect (Gtk.main_quit);
         }

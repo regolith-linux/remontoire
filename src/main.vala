@@ -16,32 +16,6 @@ const GLib.OptionEntry[] options = {
     { null }
 };
 
-string read_socket_config(string socket_address) throws GLib.Error {
-    var client = new Grelier.Client(socket_address);
-
-    return client.getConfig().config;
-}
-
-string read_file_config(string file_path) throws GLib.Error {
-    var file = File.new_for_path (file_path);
-
-    if (!file.query_exists ()) {
-        printerr ("File '%s' doesn't exist.\n", file.get_path ());
-        Process.exit (1);
-    }
-
-    var dis = new DataInputStream (file.read ());
-    string line;
-    var str_builder = new StringBuilder();
-    
-    while ((line = dis.read_line (null)) != null) {
-        str_builder.append(line);
-        str_builder.append("\n");        
-    }
-
-    return str_builder.str;
-}
-
 int main (string[] args) {
     try {
         var opt_context = new OptionContext ();
@@ -136,4 +110,36 @@ int main (string[] args) {
     });
 
     return app.run (new string[0]);
+}
+
+/**
+ *  Parse config from socket connection to i3.
+ */ 
+string read_socket_config(string socket_address) throws GLib.Error {
+    var client = new Grelier.Client(socket_address);
+
+    return client.getConfig().config;
+}
+
+/** 
+ * Parse config from file path.
+ */
+string read_file_config(string file_path) throws GLib.Error {
+    var file = File.new_for_path (file_path);
+
+    if (!file.query_exists ()) {
+        printerr ("File '%s' doesn't exist.\n", file.get_path ());
+        Process.exit (1);
+    }
+
+    var dis = new DataInputStream (file.read ());
+    string line;
+    var str_builder = new StringBuilder();
+    
+    while ((line = dis.read_line (null)) != null) {
+        str_builder.append(line);
+        str_builder.append("\n");        
+    }
+
+    return str_builder.str;
 }
