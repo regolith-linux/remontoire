@@ -83,7 +83,7 @@ namespace Remontoire {
             action_label.halign = START;
             parent.pack_start(action_label);
 
-            var keys = parse_keybinding(keybinding);
+            var keys = ConfigParser.parse_keybinding(keybinding);
             keys.reverse();
 
             Gtk.Label keybinding_label;
@@ -101,53 +101,6 @@ namespace Remontoire {
                 keybinding_label.halign = END;
                 parent.pack_end(keybinding_label, false, false, 0);
             }
-        }
-
-        /** 
-         * Ths method takes in a string and produces a list of strings. Ex:
-         * <super><shift>a b c -> <super>, <shift>, a, b, c
-        */
-        private static GLib.List<string> parse_keybinding(string raw_keybinding) {
-            var tokens = new GLib.List<string>();
-            var str_builder = new StringBuilder();
-
-            unichar c;
-            for (int i = 0; raw_keybinding.get_next_char (ref i, out c);) {
-                switch(c) {
-                    case '<':
-                        if (str_builder.len > 0) {
-                            string token = str_builder.str;
-                            tokens.append(token);
-                            str_builder.erase(0);
-                        }
-                        str_builder.append(c.to_string ());
-                        break;
-                    case '>':
-                        str_builder.append(c.to_string ());
-                        string token = str_builder.str;
-                        tokens.append(token);
-                        str_builder.erase(0);
-                        break;
-                    case ' ': 
-                        if (str_builder.len > 0) {
-                            string token = str_builder.str;
-                            tokens.append(token);
-                            str_builder.erase(0);
-                        }
-                        break;
-                    default:
-                        str_builder.append(c.to_string ());
-                        break;
-                }
-            }
-
-            if (str_builder.len > 0) {
-                string token = str_builder.str;
-                tokens.append(token);
-                str_builder.erase(0);
-            }
-
-            return tokens;
         }
 
         private static void style_window(Gtk.Window window) {
