@@ -1,3 +1,16 @@
+remontoire (1.3.0) eoan; urgency=medium
+
+  * Allow overriding style w/ custom css on command line.
+  * Add feature to show error message if no
+    keybindings parsed.  Add style for error message.
+  * Add feature to parse from file in addition to socket.  
+    Change cmd param signature to handle file and socket 
+    configs.
+  * Change config line parse strategy to allow for user 
+    section of line following line delimiter sequence.
+
+ -- Regolith Linux <regolith.linux@gmail.com>  Wed, 25 Mar 2020 20:25:24 -0700
+
 remontoire (1.2.2) eoan; urgency=medium
 
   * Tweak CSS for better GTK theme compatibility. 

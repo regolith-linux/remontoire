@@ -32,7 +32,7 @@ int main (string[] args) {
     }
 
     if (version) {
-        print ("remontoire 1.2.3 © 2020 Ken Gilmer\n");
+        print ("remontoire 1.3.0 © 2020 Ken Gilmer\n");
         return 0;
     }
 
