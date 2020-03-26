@@ -2,7 +2,9 @@
 
 ## Summary
 
-Remontoire is a small GTK app for presenting keybinding hints in a compact form suitable for tiling window environments interactively on an i3-wm based desktop. It functions by scanning and parsing comments in a specific format from a running instance of i3-wm over IPC.
+Remontoire is a small GTK app for presenting keybinding hints in a compact form suitable for tiling window environments.  It is intended for use with the i3 window manager but it's also able to display keybindings from any suitably formatted config file. 
+
+The program functions by scanning and parsing comments in a specific format (described directly below), then displaying them in a one-layer categorized list view.  The program stores the state of which sections are expanded, allowing for use on screens with limited resolution.
 
 ## Model
 
@@ -18,16 +20,18 @@ Examples:
 
 ```
 ...
-## Navigate // Relative Window // <> ↑ ↓ ← → ##
+## Navigate // Relative Window // <Super> ↑ ↓ ← → ##
 bindsym $mod+Left focus left
 ...
 ```
 
 ```
 ...
-## Launch // Application // <> Space ## some extra notes that are ignored by remontoire but maybe of interest to those reading the config file.
+## Launch // Application // <Super> Space ## some extra notes that are ignored by remontoire but maybe of interest to those reading the config file.
 bindsym $mod+space exec $i3-wm.program.launcher.app
 ```
+
+Any line that doesn't contain the structure listed here will be ignored.
 
 ## Usage
 
@@ -46,7 +50,7 @@ Application Options:
 
 ```
 
-Remontoire communicates with i3 to retrieve the active i3 config file.  To determine the socket path on a system running i3:
+Remontoire communicates with i3 via domain sockets to retrieve the active i3 config file.  To determine the socket path on a system running i3:
 ```bash
 $ i3 --get-socketpath
 ```
@@ -63,6 +67,23 @@ $ remontoire -c /etc/something/interesting.conf
 ```
 
 Once executed Remontoire will display a sticky floating window on the right-center of the primary monitor. Upon first launch, all categories are collapsed.  User selections to open categories are persisted across instantiations of the program.
+
+### Toggle
+
+It is suggested to use a small shell script to allow the dialog to be toggled on and off with a hotkey.  Here is one such script from Regolith:
+
+```
+#!/bin/bash
+# If remontoire is running, kill it.  Otherwise start it.
+
+remontoire_PID=$(pidof remontoire)
+
+if [ -z "$remontoire_PID" ]; then
+    /usr/bin/remontoire -s $(printenv I3SOCK) &
+else
+    kill $remontoire_PID
+fi
+```
 
 ## Configuration
 
@@ -92,7 +113,81 @@ $ gsettings set org.regolith-linux.remontoire window-padding-height 20
 
 ## Style
 
-You can specify a custom CSS file to change the look of the dialog.
+You can specify a custom CSS file to change the look of the dialog.  The built-in CSS as of version 1.3.0:
+
+```css
+.window {
+  margin: 4px;
+}
+
+*:selected {
+  background-color: @theme_bg_color;
+  color: @theme_text_color;
+}
+
+.category {
+  padding-top: 2px;
+  padding-bottom: 2px;
+  font-weight: bold;
+  font-size: .95em;
+  color: @theme_unfocused_fg_color;
+}
+
+.action {
+  padding-right: 10px;
+  padding-left: 15px;
+  font-weight: lighter;
+}
+
+.error {
+  padding: 15px;
+  font-size: 1.2em;
+  font-weight: bold;
+}
+
+.metakey {
+  font-family: monospace;
+  font-weight: normal;
+  background-color: @insensitive_bg_color;
+  border: 1px solid;
+  border-color: @insensitive_base_color;
+  color: @theme_unfocused_fg_color;
+
+  padding: 2px;
+  margin: 2px;
+  font-size: .9em;
+}
+
+.rangekey {
+  font-family: monospace;
+  font-weight: normal;
+  background-color: @insensitive_bg_color;
+  border: 1px solid;
+  border-color: @insensitive_base_color;
+  color: @theme_unfocused_fg_color;
+
+  padding: 2px;
+  margin: 2px;
+  font-size: .9em;
+}
+
+.key {
+  font-family: monospace;
+  font-weight: normal;
+  background-color: @insensitive_bg_color;
+  border: 1px solid;
+  border-color: @insensitive_base_color;
+  color: @theme_unfocused_fg_color;
+
+  padding: 2px;
+  margin: 2px;
+  font-size: .9em;
+}
+
+.detail {
+  margin: 2px;
+}
+```
 
 ## Install Package
 
@@ -107,10 +202,13 @@ $ sudo apt install remontoire
 
 ## Build from Source
 
-Meson, Vala, [Grelier](https://github.com/regolith-linux/grelier) and Gtk+ libraries are required to build.  After downloading sources, from within the project root, execute the following:
+Meson, Vala and Gtk+ libraries are required to build.  After downloading sources, from within the project root, execute the following:
 
-```
+```bash
 $ meson build
 $ cd build
 $ ninja
+$ src/remontoire -c <path to your config>
+... or ...
+$ src/remontoire -s `i3 --get-socketpath`
 ```
