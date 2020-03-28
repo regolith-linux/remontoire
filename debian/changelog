@@ -1,3 +1,9 @@
+remontoire (1.3.1) eoan; urgency=medium
+
+  * Fix segfault from option parser.
+
+ -- Regolith Linux <regolith.linux@gmail.com>  Fri, 27 Mar 2020 18:09:06 -0700
+
 remontoire (1.3.0) eoan; urgency=medium
 
   * Allow overriding style w/ custom css on command line.

@@ -6,7 +6,8 @@ remontoire_sources = [
   'main.vala',
   'slider_window.vala',
   'helper.vala',
-  'config_parser.vala'
+  'config_parser.vala',
+  'arg_parser.vala'
 ]
 
 grelier_deps = [

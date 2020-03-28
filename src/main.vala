@@ -1,55 +1,56 @@
 using Gtk;
+using Gee;
 
 delegate string read_config(string config_descriptor) throws GLib.Error;
 
-static string? socket = null;
-static bool version = false;
-static string? config_file = null;
-static string? style_file = null;
-const GLib.OptionEntry[] options = {
-    // --version
-    { "version", 'v', 0, OptionArg.NONE, ref version, "Display version number", null },
-    // --socket SOCKETPATH || -s SOCKETPATH
-    { "socket", 's', 0, OptionArg.STRING, ref socket, "Socket path for i3", "<Socket URI>" },
-    // --file FIlENAME || -f FILENAME
-    { "file", 'c', 0, OptionArg.FILENAME, ref config_file, "Config file", "<Path to config file>" },
-    // --style FIlENAME || -t FILENAME
-    { "style", 't', 0, OptionArg.FILENAME, ref style_file, "CSS file", "<Path to style file>" },
-    // list terminator
-    { null }
-};
-
 int main (string[] args) {
+    Map<string, string> argMap;
     try {
-        var opt_context = new OptionContext ();
-        opt_context.set_help_enabled (true);
-        opt_context.add_main_entries (options, null);
-        opt_context.parse (ref args);
-    } catch (OptionError e) {
+        argMap = parse_args(args);
+    } catch (Error e) {
         printerr ("error: %s\n", e.message);
         printerr ("Run '%s --help' to see a full list of available command line options.\n", args[0]);
         return 1;
     }
 
-    if (version) {
-        print ("remontoire 1.3.0 © 2020 Ken Gilmer\n");
+    if (argMap.has_key("-v") || argMap.has_key("--version")) {
+        print ("remontoire 1.3.0 (C) 2020 Ken Gilmer\n");
         return 0;
     }
 
-    if ((socket != null && config_file != null) || (socket == null && config_file == null)) {
-        printerr ("Must specify either socket path or file path.\n");
+    if (argMap.has_key("-h") || argMap.has_key("--help")) {
+        print ("""
+      Usage:
+        remontoire (-c <file path> | -s <socket URI> | -h | -v) [-t <file path>]
+      
+      Help Options:
+        -h, --help                           Show help options
+      
+      Application Options:
+        -v, --version                        Display version number
+        -s <Socket URI>                      Socket path for i3
+        -c <Path to config file>             Config file
+        -t <Path to style file>              CSS file
+        """);
+        print ("\n");
+        return 0;
+    }
+
+    if ((argMap.has_key("-s") && argMap.has_key("-c")) || 
+        (!argMap.has_key("-s") && !argMap.has_key("-c"))) {
+        printerr ("Must specify either socket URI to i3 socket or file path to config file.\n");
         printerr ("Run '%s --help' to see a full list of available command line options.\n", args[0]);
         return 1;
     }
 
     read_config config_reader;
     string config_descriptor;
-    if (socket != null) {
+    if (argMap.has_key("-s")) {
         config_reader = read_socket_config;
-        config_descriptor = socket;
+        config_descriptor = argMap.get("-s");
     } else {
         config_reader = read_file_config;
-        config_descriptor = config_file;
+        config_descriptor = argMap.get("-c");
     }
 
     var app = new Gtk.Application ("org.regolith.remontoire", ApplicationFlags.FLAGS_NONE);
@@ -63,10 +64,10 @@ int main (string[] args) {
                 window = new Remontoire.SliderWindow (app, configParser.parse(), settings);
 
                 Gtk.CssProvider css_provider = new Gtk.CssProvider ();
-                if (style_file == null) {
+                if (!argMap.has_key("-t")) {
                     css_provider.load_from_resource ("/application/style/style.css");
                 } else {
-                    var file = File.new_for_path (style_file);
+                    var file = File.new_for_path (argMap.get("-t"));
 
                     if (!file.query_exists ()) {
                         printerr ("File '%s' doesn't exist.\n", file.get_path ());
