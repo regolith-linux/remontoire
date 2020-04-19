@@ -2,9 +2,12 @@
 
 ## Summary
 
+<table><tr><td>
 Remontoire is a small GTK app for presenting keybinding hints in a compact form suitable for tiling window environments.  It is intended for use with the i3 window manager but it's also able to display keybindings from any suitably formatted config file. 
 
 The program functions by scanning and parsing comments in a specific format (described directly below), then displaying them in a one-layer categorized list view.  The program stores the state of which sections are expanded, allowing for use on screens with limited resolution.
+</td><td><img href="https://regolith-linux.org/regolith-site-r14-beta/docs/reference/releases/regolith-remontoire-screenshot-131.png"/>
+</td></tr></table>
 
 ## Model
 
