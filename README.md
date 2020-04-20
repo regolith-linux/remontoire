@@ -3,7 +3,7 @@
 ## Summary
 
 <table><tr><td>
-<p>Remontoire is a small GTK app for presenting keybinding hints in a compact form suitable for tiling window environments.  It is intended for use with the i3 window manager but it's also able to display keybindings from any suitably formatted config file.</p>
+<p>Remontoire is a small (~71Kb) GTK app for presenting keybinding hints in a compact form suitable for tiling window environments.  It is intended for use with the i3 window manager but it's also able to display keybindings from any suitably formatted config file.</p>
 
 <p>The program functions by scanning and parsing comments in a specific format (described directly below), then displaying them in a one-layer categorized list view.  The program stores the state of which sections are expanded, allowing for use on screens with limited resolution.</p>
 </td><td><img src="https://regolith-linux.org/regolith-site-r14-beta/docs/reference/releases/regolith-remontoire-screenshot-131.png"/>
@@ -30,7 +30,7 @@ bindsym $mod+Left focus left
 
 ```
 ...
-## Launch // Application // <Super> Space ## some extra notes that are ignored by remontoire but maybe of interest to those reading the config file.
+## Launch // Application // <Super> Space ## some extra notes that are ignored by Remontoire but maybe of interest to those reading the config file.
 bindsym $mod+space exec $i3-wm.program.launcher.app
 ```
 
@@ -196,10 +196,10 @@ You can specify a custom CSS file to change the look of the dialog.  The built-i
 
 ### Ubuntu
 
-Remontoire is available from the Regolith Linux `unstable` PPA:
+Remontoire is available from the Regolith Linux `stable` PPA:
 
 ```
-$ sudo add-apt-repository ppa:regolith-linux/unstable
+$ sudo add-apt-repository ppa:regolith-linux/stable
 $ sudo apt install remontoire
 ```
 
