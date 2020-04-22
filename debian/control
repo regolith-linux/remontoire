@@ -19,6 +19,6 @@ Architecture: any
 Depends: 
   ${shlibs:Depends}, 
   ${misc:Depends},
-  libgee-0.8-dev,
-  libjsonrpc-glib-1.0-dev
+  libgee-0.8-2,
+  libjsonrpc-glib-1.0-1
 Description: Regolith shortcut dialog
