@@ -52,7 +52,7 @@ namespace Grelier {
     private uint8[] magic_number = "i3-ipc".data;
     private uint8[] terminator = { '\0' };
     private int bytes_to_payload = 14;
-    private int buffer_size = 1024 * 32;
+    private int buffer_size = 1024 * 128;
 
     public Client(string i3Socket) throws GLib.Error {
       var socketAddress = new UnixSocketAddress(i3Socket);
