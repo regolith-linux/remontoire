@@ -5,6 +5,7 @@ delegate string read_config(string config_descriptor) throws GLib.Error;
 
 int main (string[] args) {
     Map<string, string> argMap;
+
     try {
         argMap = parse_args(args);
     } catch (Error e) {
@@ -93,26 +94,25 @@ int main (string[] args) {
             int height, width;
 
             window.get_size(out width, out height);
-
             int x_position, y_position;
 
             switch(position) {
                 case "north":
-                    x_position = ((geometry.width - width) / 2);
-                    y_position = 0 + y_padding;
+                    x_position = geometry.x + ((geometry.width - width) / 2);
+                    y_position = geometry.y + y_padding;
                     break;
                 case "south":
-                    x_position = ((geometry.width - width) / 2);
-                    y_position = geometry.height - height - y_padding;
+                    x_position = geometry.x + ((geometry.width - width) / 2);
+                    y_position = geometry.y + geometry.height - height - y_padding;
                     break;
                 case "west":
-                    x_position = 0 + x_padding;
-                    y_position = ((geometry.height - height) / 2);
+                    x_position = geometry.x + x_padding;
+                    y_position = ((geometry.y + geometry.height - height) / 2);
                     break;
                 case "east":
                 default:
-                    x_position = geometry.width - width - x_padding;
-                    y_position = ((geometry.height - height) / 2);
+                    x_position = geometry.x + geometry.width - width - x_padding;
+                    y_position = ((geometry.y + geometry.height - height) / 2);
                     break;
             }
 
@@ -158,3 +158,4 @@ string read_file_config(string file_path) throws GLib.Error {
 
     return str_builder.str;
 }
+
