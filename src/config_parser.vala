@@ -1,7 +1,7 @@
 /**
  * This class retrieves the i3 config file over IPC and 
  * produces a [Category] -> List<Keybinding> data structure
- * indended to be rendered to the user. 
+ * indended to be presented to the user.
  */
 using Gee;
 
@@ -25,9 +25,11 @@ public class ConfigParser {
   private const int PARAMETER_COUNT = 3;
   private const int MIN_LINE_LENGTH = 13; // "##x//y//z//##".length
   private string config;
+  private string line_prefix;
 
-  public ConfigParser(string config) {
+  public ConfigParser(string config, string line_prefix) {
     this.config = config;
+    this.line_prefix = line_prefix;
   }
 
   public Map<string, ArrayList<Keybinding>> parse() throws PARSE_ERROR, GLib.Error, Grelier.I3_ERROR {    
@@ -36,10 +38,17 @@ public class ConfigParser {
     if (lines == null || lines.length == 0) return Map.empty<string, ArrayList<Keybinding>>();;
 
     var config_map = new TreeMap<string, ArrayList<Keybinding>>();
+    var prefix = REMONTOIRE_LINE_WRAPPER;
+    if (line_prefix != "") {
+        prefix = line_prefix + REMONTOIRE_LINE_WRAPPER;
+    }
 
     foreach (unowned string line in lines) {
       string trimmedLine = line.strip();
-      if (lineMatch(trimmedLine)) {
+      if (lineMatch(trimmedLine, prefix)) {
+        if (line_prefix != "") {
+          trimmedLine = trimmedLine.substring(line_prefix.length);
+        }
         parseLine(trimmedLine, config_map);
       }
     }
@@ -49,10 +58,10 @@ public class ConfigParser {
     return config_map;
   }
 
-  private bool lineMatch(string line) {
+  private bool lineMatch(string line, string prefix) {
 
     return line.length > MIN_LINE_LENGTH &&
-           line.has_prefix(REMONTOIRE_LINE_WRAPPER) && 
+           line.has_prefix(prefix) &&
            line.substring(REMONTOIRE_LINE_WRAPPER.length + 1).contains(REMONTOIRE_LINE_WRAPPER) &&
            line.contains(REMONTIORE_PARAM_DELIMITER);
   }

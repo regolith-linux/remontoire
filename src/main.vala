@@ -31,17 +31,12 @@ int main (string[] args) {
         -v, --version                        Display version number
         -s <Socket URI>                      Socket path for i3
         -c <Path to config file>             Config file
+        -i <Read from standard input>        Read from standard input
         -t <Path to style file>              CSS file
+        -p <comment line prefix>             Prefix of comment line
         """);
         print ("\n");
         return 0;
-    }
-
-    if ((argMap.has_key("-s") && argMap.has_key("-c")) || 
-        (!argMap.has_key("-s") && !argMap.has_key("-c"))) {
-        printerr ("Must specify either socket URI to i3 socket or file path to config file.\n");
-        printerr ("Run '%s --help' to see a full list of available command line options.\n", args[0]);
-        return 1;
     }
 
     read_config config_reader;
@@ -49,9 +44,21 @@ int main (string[] args) {
     if (argMap.has_key("-s")) {
         config_reader = read_socket_config;
         config_descriptor = argMap.get("-s");
-    } else {
+    } else if (argMap.has_key("-c")) {
         config_reader = read_file_config;
         config_descriptor = argMap.get("-c");
+    } else if (argMap.has_key("-i")) {
+        config_reader = read_stdin_config;
+        config_descriptor = "";
+    } else {
+        printerr ("Must specify either socket URI to i3 socket or file path to config file.\n");
+        printerr ("Run '%s --help' to see a full list of available command line options.\n", args[0]);
+        return 1;
+    }
+
+    string line_prefix = "";
+    if (argMap.has_key("-p")) {
+        line_prefix = argMap.get("-p");
     }
 
     var app = new Gtk.Application ("org.regolith.remontoire", ApplicationFlags.FLAGS_NONE);
@@ -61,7 +68,7 @@ int main (string[] args) {
         var window = app.active_window;
         if (window == null) {
             try {
-                var configParser = new ConfigParser(config_reader(config_descriptor));
+                var configParser = new ConfigParser(config_reader(config_descriptor), line_prefix);
                 window = new Remontoire.SliderWindow (app, configParser.parse(), settings);
 
                 Gtk.CssProvider css_provider = new Gtk.CssProvider ();
@@ -159,3 +166,14 @@ string read_file_config(string file_path) throws GLib.Error {
     return str_builder.str;
 }
 
+string read_stdin_config(string unused) throws GLib.Error {
+    var input = new StringBuilder ();
+    var buffer = new char[1024];
+    while (!stdin.eof ()) {
+        string read_chunk = stdin.gets (buffer);
+        if (read_chunk != null) {
+            input.append (read_chunk);
+        }
+    }
+    return input.str;
+}
