@@ -1,8 +1,10 @@
-remontoire (1.3.3-1) bionic; urgency=medium
+remontoire (1.4.0-1) bionic; urgency=medium
 
   [ Ken Gilmer ]
-  * Specify font for windows glyph in stylesheet. Hopefully addresses https://github.com/regolith-linux/remontoire/issues/6 and https://github.com/regolith-linux/regolith-desktop/issues/488.
+  * Specify font for windows glyph in stylesheet.
   * Increase buffer to 128Kb to handle larger i3 config files
+  * Add feature to consume for stdin and specify arbitrary string prefix for more config file format support.
+  * Fix window positioning in multi-monitor setups.
 
  -- Regolith Linux <regolith.linux@gmail.com>  Wed, 14 Oct 2020 21:58:16 -0700
 
