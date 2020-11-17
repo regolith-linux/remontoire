@@ -51,7 +51,7 @@ int main (string[] args) {
         config_reader = read_stdin_config;
         config_descriptor = "";
     } else {
-        printerr ("Must specify either socket URI to i3 socket or file path to config file.\n");
+        printerr ("Must specify -s <i3 Socket URI>, -c <Config file path> or -i <STDIN>.\n");
         printerr ("Run '%s --help' to see a full list of available command line options.\n", args[0]);
         return 1;
     }
