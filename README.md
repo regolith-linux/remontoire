@@ -48,12 +48,14 @@ Help Options:
 Application Options:
   -v, --version                        Display version number
   -s, --socket=<Socket URI>            Socket path for i3
-  -c, --file=<Path to config file>     Config file
-  -t, --style=<Path to style file>     CSS file
+  -c <Path to config file>             Config file
+  -i <Read from standard input>        Read from standard input
+  -t <Path to style file>              CSS file
+  -p <comment line prefix>             Prefix of comment line
 
 ```
 
-Remontoire communicates with i3 via domain sockets to retrieve the active i3 config file.  To determine the socket path on a system running i3:
+With `-s`, Remontoire communicates with i3 via domain sockets to retrieve the active i3 config file.  To determine the socket path on a system running i3:
 ```bash
 $ i3 --get-socketpath
 ```
@@ -68,6 +70,9 @@ Remontoire can also be passed a file path and will read from that instead of the
 ```bash
 $ remontoire -c /etc/something/interesting.conf
 ```
+
+As a third option to provide your config files, Remontoire can read from STDIN. Use this option
+if you want to pass in the contents of multiple config files.
 
 Once executed Remontoire will display a sticky floating window on the right-center of the primary monitor. Upon first launch, all categories are collapsed.  User selections to open categories are persisted across instantiations of the program.
 
@@ -191,6 +196,12 @@ You can specify a custom CSS file to change the look of the dialog.  The built-i
   margin: 2px;
 }
 ```
+
+## Using Remontoire to view keybindings for arbitrary config files
+
+Since Remontoire parses comments and not actual keybindings, it can be used as a keybinding viewer for any app that stores keybindings in plain text and supports comments, like Sway or Vim. Use the `-c` or  `-i` options documented above to supply the config files. If config doesn't use `#` as a comment prefix, you use the `-p` option to supply comment prefix to go immediately before '##'. Here's an example of parsing a comment using Vim's quote character as a prefix:
+
+    echo '"## Category // Description // <Super> J ##' | remontoire -i -p '"'
 
 ## Install Package
 
