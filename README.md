@@ -214,6 +214,16 @@ $ sudo add-apt-repository ppa:regolith-linux/stable
 $ sudo apt install remontoire
 ```
 
+### openSUSE
+
+Remontoire is available from the X11:Utilities devel project:
+
+```
+$ sudo zypper ar -f obs://X11:Utilities X11Utilities
+$ sudo zypper ref
+$ sudo zypper in remontoire
+```
+
 ## Build from Source
 
 Meson, Vala and Gtk+ libraries are required to build.  After downloading sources, from within the project root, execute the following:
