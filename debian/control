@@ -21,4 +21,9 @@ Depends:
   ${misc:Depends},
   libgee-0.8-2,
   libjsonrpc-glib-1.0-1
-Description: Regolith shortcut dialog
+Recommends: fonts-font-awesome
+Description: General purpose keybinding viewer
+ Remontoire reads keybinding specifications via a specific 
+ string format and displays them in a one-level-deep tree
+ structure suitable for tiling window managers such as i3.
+
