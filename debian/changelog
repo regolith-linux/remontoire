@@ -1,3 +1,17 @@
+remontoire (1.4.1-1) bionic; urgency=medium
+
+  [ Mark Stosberg ]
+  * Document `-i`, `-p`. (#11)
+
+  [ Michael Vetter ]
+  * Add openSUSE install instructions
+
+  [ Ken Gilmer ]
+  * Add fonts-font-awesome as soft dependency based on reference in CSS file and user feedback.  Addresses https://github.com/regolith-linux/remontoire/issues/16.
+  * Cleanup
+
+ -- Regolith Linux <regolith.linux@gmail.com>  Sat, 23 Jan 2021 11:39:37 -0800
+
 remontoire (1.4.0-1) bionic; urgency=medium
 
   [ Ken Gilmer ]

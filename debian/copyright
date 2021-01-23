@@ -3,7 +3,7 @@ Upstream-Name: remontoire
 Source: https://github.com/regolith-linux/remontoire
 
 Files: *
-Copyright: 2019 - 2020 Ken Gilmer <kgilmer@gmail.com>
+Copyright: 2019 - 2021 Ken Gilmer <kgilmer@gmail.com>
 License: GPL-3
  This program is free software: you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
