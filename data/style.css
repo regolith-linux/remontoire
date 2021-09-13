@@ -69,3 +69,7 @@
 .detail {
   margin: 2px;
 }
+
+/* Remove dotted lines from ScrolledWindow container on left and right */
+scrolledwindow undershoot.right,
+scrolledwindow undershoot.left { background-image: none; }
