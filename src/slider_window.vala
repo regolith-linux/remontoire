@@ -21,8 +21,15 @@ namespace Remontoire {
                 flowbox.max_children_per_line = 1;
                 flowbox.min_children_per_line = 1;
                 flowbox.set_orientation(Orientation.HORIZONTAL);
-                flowbox.get_style_context().add_class("window");
-                this.add(flowbox);
+                flowbox.get_style_context().add_class("window");                
+
+                var scroll = new ScrolledWindow (null, null);
+                scroll.set_policy(PolicyType.NEVER, PolicyType.AUTOMATIC);
+                scroll.propagate_natural_height = true;
+                scroll.propagate_natural_width = true;
+                scroll.add(flowbox);
+                
+                this.add(scroll);
 
                 build_widgets (flowbox, config, settings, expandedCategories);
             } else {
@@ -103,7 +110,7 @@ namespace Remontoire {
             }
         }
 
-        private static void style_window(Gtk.Window window) {
+        private static void style_window(Gtk.Window window) {            
             window.set_skip_taskbar_hint(true);
             window.set_skip_pager_hint(true);
             window.set_decorated(false);
