@@ -1,25 +1,25 @@
 using Gtk;
 using Gee;
 
-delegate string read_config(string config_descriptor) throws GLib.Error;
+delegate string read_config (string config_descriptor) throws GLib.Error;
 
 int main (string[] args) {
     Map<string, string> argMap;
 
     try {
-        argMap = parse_args(args);
+        argMap = parse_args (args);
     } catch (Error e) {
         printerr ("error: %s\n", e.message);
         printerr ("Run '%s --help' to see a full list of available command line options.\n", args[0]);
         return 1;
     }
 
-    if (argMap.has_key("-v") || argMap.has_key("--version")) {
+    if (argMap.has_key ("-v") || argMap.has_key ("--version")) {
         print ("remontoire 1.3.0 (C) 2020 Ken Gilmer\n");
         return 0;
     }
 
-    if (argMap.has_key("-h") || argMap.has_key("--help")) {
+    if (argMap.has_key ("-h") || argMap.has_key ("--help")) {
         print ("""
       Usage:
         remontoire (-c <file path> | -s <socket URI> | -h | -v) [-t <file path>]
@@ -41,13 +41,13 @@ int main (string[] args) {
 
     read_config config_reader;
     string config_descriptor;
-    if (argMap.has_key("-s")) {
+    if (argMap.has_key ("-s")) {
         config_reader = read_socket_config;
-        config_descriptor = argMap.get("-s");
-    } else if (argMap.has_key("-c")) {
+        config_descriptor = argMap.get ("-s");
+    } else if (argMap.has_key ("-c")) {
         config_reader = read_file_config;
-        config_descriptor = argMap.get("-c");
-    } else if (argMap.has_key("-i")) {
+        config_descriptor = argMap.get ("-c");
+    } else if (argMap.has_key ("-i")) {
         config_reader = read_stdin_config;
         config_descriptor = "";
     } else {
@@ -57,25 +57,25 @@ int main (string[] args) {
     }
 
     string line_prefix = "";
-    if (argMap.has_key("-p")) {
-        line_prefix = argMap.get("-p");
+    if (argMap.has_key ("-p")) {
+        line_prefix = argMap.get ("-p");
     }
 
     var app = new Gtk.Application ("org.regolith.remontoire", ApplicationFlags.FLAGS_NONE);
-    var settings = new GLib.Settings("org.regolith-linux.remontoire");
+    var settings = new GLib.Settings ("org.regolith-linux.remontoire");
 
     app.activate.connect (() => {
         var window = app.active_window;
         if (window == null) {
             try {
-                var configParser = new ConfigParser(config_reader(config_descriptor), line_prefix);
-                window = new Remontoire.SliderWindow (app, configParser.parse(), settings);
+                var configParser = new ConfigParser (config_reader (config_descriptor), line_prefix);
+                window = new Remontoire.SliderWindow (app, configParser.parse (), settings);
 
                 Gtk.CssProvider css_provider = new Gtk.CssProvider ();
-                if (!argMap.has_key("-t")) {
+                if (!argMap.has_key ("-t")) {
                     css_provider.load_from_resource ("/application/style/style.css");
                 } else {
-                    var file = File.new_for_path (argMap.get("-t"));
+                    var file = File.new_for_path (argMap.get ("-t"));
 
                     if (!file.query_exists ()) {
                         printerr ("File '%s' doesn't exist.\n", file.get_path ());
@@ -86,24 +86,24 @@ int main (string[] args) {
 
                 Gtk.StyleContext.add_provider_for_screen (Gdk.Screen.get_default (), css_provider, Gtk.STYLE_PROVIDER_PRIORITY_USER);
             } catch (PARSE_ERROR ex) {
-                error("Failed to start: " + ex.message);
+                error ("Failed to start: " + ex.message);
             } catch (GLib.Error ex) {
-                error("Failed to start: " + ex.message);
+                error ("Failed to start: " + ex.message);
             }
         }
 
-        var geometry = Helper.getScreenSizeForWindow(window);
-        var position = settings.get_string("window-position");
-        var x_padding = settings.get_int("window-padding-width");
-        var y_padding = settings.get_int("window-padding-height");
+        var geometry = Helper.getScreenSizeForWindow (window);
+        var position = settings.get_string ("window-position");
+        var x_padding = settings.get_int ("window-padding-width");
+        var y_padding = settings.get_int ("window-padding-height");
 
         window.configure_event.connect (() => {
             int height, width;
 
-            window.get_size(out width, out height);
+            window.get_size (out width, out height);
             int x_position, y_position;
 
-            switch(position) {
+            switch (position) {
                 case "north":
                     x_position = geometry.x + ((geometry.width - width) / 2);
                     y_position = geometry.y + y_padding;
@@ -123,7 +123,7 @@ int main (string[] args) {
                     break;
             }
 
-            window.move(x_position, y_position);
+            window.move (x_position, y_position);
 
             return false;
         });
@@ -137,16 +137,16 @@ int main (string[] args) {
 /**
  *  Parse config from socket connection to i3.
  */
-string read_socket_config(string socket_address) throws GLib.Error {
-    var client = new Grelier.Client(socket_address);
+string read_socket_config (string socket_address) throws GLib.Error {
+    var client = new Grelier.Client (socket_address);
 
-    return client.getConfig().config;
+    return client.getConfig ().config;
 }
 
 /**
  * Parse config from file path.
  */
-string read_file_config(string file_path) throws GLib.Error {
+string read_file_config (string file_path) throws GLib.Error {
     var file = File.new_for_path (file_path);
 
     if (!file.query_exists ()) {
@@ -156,17 +156,17 @@ string read_file_config(string file_path) throws GLib.Error {
 
     var dis = new DataInputStream (file.read ());
     string line;
-    var str_builder = new StringBuilder();
+    var str_builder = new StringBuilder ();
 
     while ((line = dis.read_line (null)) != null) {
-        str_builder.append(line);
-        str_builder.append("\n");
+        str_builder.append (line);
+        str_builder.append ("\n");
     }
 
     return str_builder.str;
 }
 
-string read_stdin_config(string unused) throws GLib.Error {
+string read_stdin_config (string unused) throws GLib.Error {
     var input = new StringBuilder ();
     var buffer = new char[1024];
     while (!stdin.eof ()) {

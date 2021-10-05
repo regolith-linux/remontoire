@@ -1,3 +1,6 @@
+
+add_project_arguments('--debug', language : 'vala')
+
 grelier_sources = [
   'grelier.vala'
 ]
