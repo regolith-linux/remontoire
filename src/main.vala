@@ -15,7 +15,7 @@ int main (string[] args) {
     }
 
     if (argMap.has_key ("-v") || argMap.has_key ("--version")) {
-        print ("remontoire 1.3.0 (C) 2020 Ken Gilmer\n");
+        print ("remontoire 1.4.0 (C) 2020 Ken Gilmer\n");
         return 0;
     }
 
