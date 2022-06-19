@@ -1,3 +1,17 @@
+remontoire (1.4.2) focal; urgency=medium
+
+  [ Eduard Lucena ]
+  * Adding content to Description tag (#18)
+
+  [ Ken Gilmer ]
+  * Add build automation
+  * Don't draw scroll hints for horizontal scrolling
+  * Add scrollable parent to flowbox to allow vertical scrolling of content when exceeds bounds of flowbox
+  * Cleanup source formatting
+  * Fix version returned by program to match package version
+
+ -- Regolith Linux <regolith.linux@gmail.com>  Sat, 18 Jun 2022 17:03:11 -0700
+
 remontoire (1.4.1-1) bionic; urgency=medium
 
   [ Mark Stosberg ]
