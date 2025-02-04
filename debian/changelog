@@ -1,3 +1,18 @@
+remontoire (1.4.3) focal; urgency=medium
+
+  [ Ken Gilmer ]
+  * Fix build automation
+
+  [ Khosrow Moossavi ]
+  * chore: remove obsolete package broadcast action
+  * feat: enable github action to test pull requests
+  * feat: enable github action to publish to unstable
+  * feat: enable github action to publish to testing
+  * feat: enable github action to prepare release
+  * fix: create release tag from correct git sha
+
+ -- Regolith Linux <regolith.linux@gmail.com>  Tue, 04 Feb 2025 03:06:27 +0000
+
 remontoire (1.4.2) focal; urgency=medium
 
   [ Eduard Lucena ]
