@@ -224,6 +224,15 @@ $ sudo zypper ref
 $ sudo zypper in remontoire
 ```
 
+### Fedora
+
+Remontoire is available in [X3MBoy's Copr](https://copr.fedorainfracloud.org/coprs/x3mboy/remontoire/). Install is available for Fedora 40, 41, 42 and rawhide:
+
+```
+sudo dnf copr enable x3mboy/remontoire
+sudo dnf install remontoire
+```
+
 ## Build from Source
 
 Meson, Vala and Gtk+ libraries are required to build.  After downloading sources, from within the project root, execute the following:
