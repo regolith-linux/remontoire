@@ -2,12 +2,9 @@
 
 ## Summary
 
-<table><tr><td>
-<p>Remontoire is a small (~71Kb) GTK app for presenting keybinding hints in a compact form suitable for tiling window environments.  It is intended for use with the i3 window manager but it's also able to display keybindings from any suitably formatted config file.</p>
-
-<p>The program functions by scanning and parsing comments in a specific format (described directly below), then displaying them in a one-layer categorized list view.  The program stores the state of which sections are expanded, allowing for use on screens with limited resolution.</p>
-</td><td><img src="https://regolith-linux.org/regolith-site-r14-beta/docs/reference/releases/regolith-remontoire-screenshot-131.png"/>
-</td></tr></table>
+| Summary | Screenshot |
+| ------- | ---------- | 
+| Remontoire is a small (~71Kb) GTK app for presenting keybinding hints in a compact form suitable for tiling window environments.  It is intended for use with the i3 window manager but it's also able to display keybindings from any suitably formatted config file. The program functions by scanning and parsing comments in a specific format (described directly below), then displaying them in a one-layer categorized list view.  The program stores the state of which sections are expanded, allowing for use on screens with limited resolution. | ![screenshot](https://regolith-linux.org/images/releases/regolith-remontoire-screenshot-131.png) |
 
 ## Model
 
@@ -222,6 +219,15 @@ Remontoire is available from the X11:Utilities devel project:
 $ sudo zypper ar -f obs://X11:Utilities X11Utilities
 $ sudo zypper ref
 $ sudo zypper in remontoire
+```
+
+### Fedora
+
+Remontoire is available in [X3MBoy's Copr](https://copr.fedorainfracloud.org/coprs/x3mboy/remontoire/). Install is available for Fedora 40, 41, 42 and rawhide:
+
+```
+sudo dnf copr enable x3mboy/remontoire
+sudo dnf install remontoire
 ```
 
 ## Build from Source
