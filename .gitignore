@@ -1,5 +1,7 @@
+tags
 .buildconfig
 files
 build
 .vscode
 builddir
+.gitignore

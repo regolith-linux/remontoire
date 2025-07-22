@@ -44,6 +44,13 @@ jobs:
           commit_user_email: bot@regolith-desktop.com
           commit_author: "regolith-ci-bot <bot@regolith-desktop.com>"
 
+      - name: Create custom Source files for external packaging
+        run: |
+            VERSION="${{ github.ref_name }}"
+            REPO_NAME="${{ github.event.repository.name}}"
+            mkdir -p release_assets
+            tar -cvzf "release_assets/${REPO_NAME}/-${VERSION}.tar.gz" --exclude=.git .
+
       - name: Release Package
         uses: softprops/action-gh-release@v2
         if: ${{ steps.prepare.outputs.release-exists == 'false' }}
@@ -53,3 +60,9 @@ jobs:
           token: ${{ secrets.ORG_BROADCAST_TOKEN2 }}
           target_commitish: "${{ github.sha }}"
           generate_release_notes: true
+          files: |
+            release_assets/${{ github.event.repository.name }}-${{ github.ref_name }}.tar.gz
+
+      - name: Cleanup
+        run: |
+            rm -rf release_assets
