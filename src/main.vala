@@ -95,12 +95,14 @@ int main (string[] args) {
             }
         }
 
-        var geometry = Helper.getScreenSizeForWindow (window);
         var position = settings.get_string ("window-position");
         var x_padding = settings.get_int ("window-padding-width");
         var y_padding = settings.get_int ("window-padding-height");
 
         window.configure_event.connect (() => {
+            // The monitor the window manager mapped the window on, usually the
+            // focused one. Only known once the window exists on screen.
+            var geometry = Helper.getScreenSizeForWindow (window);
             int height, width;
 
             window.get_size (out width, out height);
