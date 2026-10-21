@@ -61,7 +61,10 @@ int main (string[] args) {
         line_prefix = argMap.get ("-p");
     }
 
-    var app = new Gtk.Application ("org.regolith.remontoire", ApplicationFlags.FLAGS_NONE);
+    // No flags. GLib 2.74 deprecated ApplicationFlags.FLAGS_NONE in favour of
+    // DEFAULT_FLAGS, which older GLib and valac releases do not have; both are
+    // 0, so use the value directly to build without warnings everywhere.
+    var app = new Gtk.Application ("org.regolith.remontoire", 0);
     var settings = new GLib.Settings ("org.regolith-linux.remontoire");
 
     app.activate.connect (() => {

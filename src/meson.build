@@ -36,6 +36,6 @@ remontoire_sources += import( 'gnome' ).compile_resources(
 gnome = import('gnome')
 
 executable('remontoire', [grelier_sources, remontoire_sources],
-  vala_args: ['--target-glib=2.50'],  dependencies: [grelier_deps, remontoire_deps],
+  vala_args: ['--target-glib=auto'],  dependencies: [grelier_deps, remontoire_deps],
   install: true,
 )
