@@ -66,7 +66,11 @@ namespace Grelier {
 
         ~Client () {
             if (socket != null) {
-                socket.close ();
+                try {
+                    socket.close ();
+                } catch (GLib.Error e) {
+                    warning ("Failed to close the i3 socket: %s", e.message);
+                }
             }
         }
 
