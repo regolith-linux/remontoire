@@ -37,8 +37,6 @@ namespace Remontoire {
                 warning_label.get_style_context ().add_class ("error");
                 this.add (warning_label);
             }
-
-            this.destroy.connect (Gtk.main_quit);
         }
 
         private void build_widgets (Gtk.Container container, Map<string, ArrayList<Keybinding> > keybindings, GLib.Settings settings, Set<string> expandedCategories) {
