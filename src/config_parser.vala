@@ -69,7 +69,7 @@ public class ConfigParser {
   /** 
    * ## category // action // keybinding ## anything else
   */
-  private void parseLine(string line, Map<string, ArrayList<Keybinding>> configMap) throws PARSE_ERROR.BAD_PARAM_MATCH {
+  private void parseLine(string line, Map<string, ArrayList<Keybinding>> configMap) {
     // Find end of machine-parsable section of line.
     int termSequenceIndex = line.index_of("##", 3);
     // Extract machine-parsable section of line.
@@ -77,8 +77,10 @@ public class ConfigParser {
     // Tokenize parameters
     string[] values = valueList.split(REMONTIORE_PARAM_DELIMITER);
 
+    // Skip a comment that is not a keybinding instead of failing to start.
     if (values.length != PARAMETER_COUNT) {
-      throw new PARSE_ERROR.BAD_PARAM_MATCH("Invalid line: " + line + "\n");
+      warning ("Ignoring invalid keybinding comment: %s", line);
+      return;
     }
 
     string category = values[0].strip();
