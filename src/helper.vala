@@ -1,5 +1,4 @@
-
-class Helper {
+public class Helper {
 
     /**
      * Return the screen dimentions in pixels that containes the passed-in window.
