@@ -42,8 +42,8 @@ namespace Grelier {
     public class ConfigReply {
         public string config { get; private set; }
 
-        internal ConfigReply (Json.Node responseJson) {
-            config = responseJson.get_object ().get_string_member ("config");
+        internal ConfigReply (string config) {
+            this.config = config;
         }
     }
 
@@ -136,7 +136,180 @@ namespace Grelier {
                 throw new I3_ERROR.RPC_ERROR ("No Response");
             }
 
-            return new ConfigReply (response);
+            var reply = response.get_object ();
+
+            // i3 sends the main config and every file it includes, in the
+            // order it read them.
+            if (reply.has_member ("included_configs")) {
+                var config = new StringBuilder ();
+                var sent_files = new GenericSet<string>(str_hash, str_equal);
+                string ? main_config = null;
+                string ? main_path = null;
+                foreach (unowned Json.Node node in reply.get_array_member ("included_configs").get_elements ()) {
+                    var file = node.get_object ();
+                    string contents = file.get_string_member ("raw_contents");
+                    if (main_config == null) {
+                        main_config = contents;
+                        main_path = file.get_string_member ("path");
+                    }
+                    sent_files.add (file.get_string_member ("path"));
+                    config.append (contents);
+                    if (!contents.has_suffix ("\n")) {
+                        config.append_c ('\n');
+                    }
+                }
+
+                // Once one included file has a config error, such as a
+                // duplicate binding, i3 leaves it and the files included
+                // after it out of included_configs, although it still loads
+                // their bindings. Read the files it left out.
+                if (main_config != null) {
+                    var read_files = new GenericSet<string>(str_hash, str_equal);
+                    read_files.add (real_path (main_path));
+                    append_config (config, main_config, Path.get_dirname (main_path), read_files, sent_files, false);
+                }
+                return new ConfigReply (config.str);
+            }
+
+            // sway sends only the main config: read the files it includes.
+            // Relative include paths start from the main config's directory.
+            string config_dir = Environment.get_current_dir ();
+            var version = i3_ipc (I3_COMMAND.GET_VERSION);
+            if (version != null && version.get_object ().has_member ("loaded_config_file_name")) {
+                config_dir = Path.get_dirname (version.get_object ().get_string_member ("loaded_config_file_name"));
+            }
+
+            var read_files = new GenericSet<string>(str_hash, str_equal);
+            return new ConfigReply (add_included_files (reply.get_string_member ("config"), config_dir, read_files));
+        }
+
+        /**
+         * Return config with the contents of every file it includes inserted
+         * after the include line, recursively, as sway reads them. Supports
+         * ~, $VAR and ${VAR} and wildcards in the last path component.
+         */
+        internal static string add_included_files (string config, string config_dir, GenericSet<string> read_files) {
+            var result = new StringBuilder ();
+            append_config (result, config, config_dir, read_files, null, true);
+            return result.str;
+        }
+
+        /**
+         * Append config to result if show is true, and after each of its
+         * include lines the files it includes, recursively. Files are
+         * identified by their real path, as i3 and sway do, and read once.
+         * The files in sent_files are already in result: only the files they
+         * include are added.
+         */
+        private static void append_config (StringBuilder result, string config, string config_dir,
+                                           GenericSet<string> read_files, GenericSet<string> ? sent_files, bool show) {
+            int start = 0;
+
+            while (start < config.length) {
+                int end = config.index_of_char ('\n', start);
+                if (end < 0) {
+                    end = config.length;
+                }
+                string line = config.substring (start, end - start);
+                start = end + 1;
+
+                if (show) {
+                    result.append (line);
+                    result.append_c ('\n');
+                }
+
+                string stripped = line.strip ();
+                if (!stripped.has_prefix ("include ") && !stripped.has_prefix ("include\t")) {
+                    continue;
+                }
+
+                foreach (string found in find_files (expand_path (stripped.substring (8).strip (), config_dir))) {
+                    string path = real_path (found);
+                    if (read_files.contains (path)) {
+                        continue;
+                    }
+                    read_files.add (path);
+
+                    string contents;
+                    try {
+                        FileUtils.get_contents (path, out contents);
+                    } catch (FileError e) {
+                        continue;
+                    }
+                    bool sent = sent_files != null && sent_files.contains (path);
+                    append_config (result, contents, Path.get_dirname (path), read_files, sent_files, !sent);
+                }
+            }
+        }
+
+        /* The absolute path of a file with symbolic links resolved, or path if it does not exist. */
+        private static string real_path (string path) {
+            return Posix.realpath (path) ?? path;
+        }
+
+        private static string expand_path (string path, string config_dir) {
+            string expanded = path;
+
+            if (expanded == "~" || expanded.has_prefix ("~/")) {
+                expanded = Environment.get_home_dir () + expanded.substring (1);
+            }
+
+            // $VAR and ${VAR}
+            var result = new StringBuilder ();
+            int i = 0;
+            while (i < expanded.length) {
+                if (expanded[i] != '$') {
+                    result.append_c (expanded[i++]);
+                    continue;
+                }
+                bool braced = i + 1 < expanded.length && expanded[i + 1] == '{';
+                int name_start = braced ? i + 2 : i + 1;
+                int name_end = name_start;
+                while (name_end < expanded.length && (expanded[name_end].isalnum () || expanded[name_end] == '_')) {
+                    name_end++;
+                }
+                if (name_end == name_start || (braced && (name_end >= expanded.length || expanded[name_end] != '}'))) {
+                    result.append_c (expanded[i++]);
+                    continue;
+                }
+                result.append (Environment.get_variable (expanded.substring (name_start, name_end - name_start)) ?? "");
+                i = braced ? name_end + 1 : name_end;
+            }
+            expanded = result.str;
+
+            if (!Path.is_absolute (expanded)) {
+                expanded = Path.build_filename (config_dir, expanded);
+            }
+
+            return expanded;
+        }
+
+        /**
+         * Files matching path, sorted; path may have wildcards in its last component.
+         */
+        private static List<string> find_files (string path) {
+            var files = new List<string> ();
+            string name = Path.get_basename (path);
+
+            if (!("*" in name || "?" in name)) {
+                files.append (path);
+                return files;
+            }
+
+            string dir_path = Path.get_dirname (path);
+            try {
+                var dir = Dir.open (dir_path);
+                string ? entry;
+                while ((entry = dir.read_name ()) != null) {
+                    if (PatternSpec.match_simple (name, entry) && !entry.has_prefix (".")) {
+                        files.insert_sorted (Path.build_filename (dir_path, entry), strcmp);
+                    }
+                }
+            } catch (FileError e) {
+                // No such directory: nothing is included.
+            }
+
+            return files;
         }
     }
 }
