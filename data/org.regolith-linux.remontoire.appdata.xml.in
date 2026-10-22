@@ -1,7 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<component type="desktop">
-	<id>org.gnome.Remontoire.desktop</id>
+<component type="desktop-application">
+	<id>org.regolith.remontoire</id>
 	<metadata_license>CC0-1.0</metadata_license>
 	<project_license>GPL-3.0-or-later</project_license>
-	<description>Desktop xml's description</description>
+	<name>Remontoire</name>
+	<summary>Keybinding viewer for tiling window managers</summary>
+	<description>
+		<p>Remontoire shows the keybindings described by comments in a config file, such as the i3 or sway config, grouped by category.</p>
+	</description>
+	<launchable type="desktop-id">org.regolith-linux.remontoire.desktop</launchable>
+	<developer id="org.regolith-linux">
+		<name>Regolith Linux</name>
+	</developer>
+	<url type="homepage">https://github.com/regolith-linux/remontoire</url>
+	<content_rating type="oars-1.1" />
 </component>
