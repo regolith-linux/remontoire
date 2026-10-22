@@ -50,9 +50,7 @@ namespace Grelier {
     public class Client {
         private Socket socket;
         private uint8[] magic_number = "i3-ipc".data;
-        private uint8[] terminator = { '\0' };
-        private int bytes_to_payload = 14;
-        private int buffer_size = 1024 * 128;
+        private DataInputStream input;
 
         public Client (string i3Socket) throws GLib.Error {
             var socketAddress = new UnixSocketAddress (i3Socket);
@@ -62,6 +60,9 @@ namespace Grelier {
 
             socket.connect (socketAddress);
             socket.set_blocking (true);
+
+            input = new DataInputStream (new UnixInputStream (socket.fd, false));
+            input.byte_order = DataStreamByteOrder.HOST_ENDIAN;
         }
 
         ~Client () {
@@ -77,14 +78,6 @@ namespace Grelier {
         private uint8[] int32_to_uint8_array (int32 input) {
             Variant val = new Variant.int32 (input);
             return val.get_data_as_bytes ().get_data ();
-        }
-
-        private string terminate_string (uint8[] rawString) {
-            ByteArray b = new ByteArray ();
-            b.append (rawString);
-            b.append (terminator);
-
-            return (string) b.data;
         }
 
         private uint8[] generate_request (I3_COMMAND cmd) {
@@ -103,18 +96,31 @@ namespace Grelier {
             ssize_t sent = socket.send (generate_request (command));
 
             debug ("Sent " + sent.to_string () + " bytes to i3.\n");
-            uint8[] buffer = new uint8[buffer_size];
 
-            ssize_t len = socket.receive (buffer);
+            // Reply: "i3-ipc", payload length, reply type, payload. A large
+            // payload arrives in several chunks, so read until it is complete.
+            for (int i = 0; i < magic_number.length; i++) {
+                if (input.read_byte () != magic_number[i]) {
+                    throw new I3_ERROR.RPC_ERROR ("Invalid reply header");
+                }
+            }
+            uint32 payload_length = input.read_uint32 ();
+            input.read_uint32 ();
 
-            debug ("Received  " + len.to_string () + " bytes from i3.\n");
+            var payload = new ByteArray.sized (payload_length);
+            while (payload.len < payload_length) {
+                Bytes chunk = input.read_bytes (payload_length - payload.len);
 
-            Bytes responseBytes = new Bytes.take (buffer[0 : len]);
+                if (chunk.get_size () == 0) {
+                    throw new I3_ERROR.RPC_ERROR ("Connection closed after %u of %u bytes".printf (payload.len, payload_length));
+                }
+                payload.append (chunk.get_data ());
+            }
 
-            string payload = terminate_string (responseBytes.slice (bytes_to_payload, responseBytes.length).get_data ());
+            debug ("Received " + payload.len.to_string () + " bytes from i3.\n");
 
             Json.Parser parser = new Json.Parser ();
-            parser.load_from_data (payload);
+            parser.load_from_data ((string) payload.data, payload.len);
 
             return parser.get_root ();
         }
