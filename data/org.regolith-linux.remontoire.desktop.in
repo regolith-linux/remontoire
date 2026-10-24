@@ -5,5 +5,6 @@ Terminal=false
 Type=Application
 Categories=GTK;
 StartupNotify=true
+NoDisplay=true
 Icon=dialog-information
 Keywords=shortcuts,keybindings
