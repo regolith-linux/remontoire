@@ -14,6 +14,18 @@ int main (string[] args) {
         return 1;
     }
 
+    // Options that need a value. An option followed by another option,
+    // such as "-s -v", has none.
+    const string[] VALUE_OPTIONS = { "-s", "-c", "-t", "-p" };
+    for (int i = 0; i < VALUE_OPTIONS.length; i++) {
+        string option = VALUE_OPTIONS[i];
+        if (argMap.has_key (option) && argMap.get (option) == null) {
+            printerr ("error: option %s requires a value\n", option);
+            printerr ("Run '%s --help' to see a full list of available command line options.\n", args[0]);
+            return 1;
+        }
+    }
+
     if (argMap.has_key ("-v") || argMap.has_key ("--version")) {
         print ("remontoire 1.4.4 (C) 2022 Ken Gilmer\n");
         return 0;
