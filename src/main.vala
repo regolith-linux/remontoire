@@ -132,12 +132,12 @@ int main (string[] args) {
                     break;
                 case "west":
                     x_position = geometry.x + x_padding;
-                    y_position = ((geometry.y + geometry.height - height) / 2);
+                    y_position = geometry.y + ((geometry.height - height) / 2);
                     break;
                 case "east":
                 default:
                     x_position = geometry.x + geometry.width - width - x_padding;
-                    y_position = ((geometry.y + geometry.height - height) / 2);
+                    y_position = geometry.y + ((geometry.height - height) / 2);
                     break;
             }
 
