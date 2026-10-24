@@ -8,6 +8,10 @@ namespace Remontoire {
      * Primary window to dispay keybindings.
      */
     public class SliderWindow : Gtk.Window {
+        // Longer category and action names are shortened with an ellipsis
+        // (the full name is in the tooltip), so the window stays narrower
+        // than the screen.
+        private const int MAX_LABEL_WIDTH_CHARS = 60;
 
         public SliderWindow (Gtk.Application app, Map<string, ArrayList<Keybinding> > config, GLib.Settings settings) throws PARSE_ERROR, GLib.Error, Grelier.I3_ERROR {
             Object (application: app);
@@ -67,6 +71,7 @@ namespace Remontoire {
 
         private static void add_category (Gtk.Container container, out Gtk.Expander expander, string label) {
             expander = new Gtk.Expander (label);
+            limit_width ((Gtk.Label) expander.label_widget);
             expander.get_style_context ().add_class ("category");
             container.add (expander);
         }
@@ -86,6 +91,7 @@ namespace Remontoire {
             var action_label = new Gtk.Label (action);
             action_label.get_style_context ().add_class ("action");
             action_label.halign = START;
+            limit_width (action_label);
             parent.pack_start (action_label);
 
             var keys = ConfigParser.parse_keybinding (keybinding);
@@ -105,6 +111,14 @@ namespace Remontoire {
                 }
                 keybinding_label.halign = END;
                 parent.pack_end (keybinding_label, false, false, 0);
+            }
+        }
+
+        private static void limit_width (Gtk.Label label) {
+            label.ellipsize = Pango.EllipsizeMode.END;
+            label.max_width_chars = MAX_LABEL_WIDTH_CHARS;
+            if (label.label.char_count () > MAX_LABEL_WIDTH_CHARS) {
+                label.tooltip_text = label.label;
             }
         }
 
