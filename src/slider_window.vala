@@ -123,21 +123,11 @@ namespace Remontoire {
         }
 
         private Set<string> parsePaths (string pathList) {
-            var pathSet = new HashSet<string>();
-            if (pathList.length == 0) return pathSet;
-
-            pathSet.add_all_array (pathList.split (","));
-
-            return pathSet;
+            return Helper.split_categories (pathList);
         }
 
         private void savePaths (Set<string> pathSet, GLib.Settings settings) {
-            string pathSetStr = "";
-            foreach (var pathstr in pathSet) {
-                pathSetStr += pathstr;
-                pathSetStr += ",";
-            }
-            settings.set_string ("expanded-category-path-ids", pathSetStr);
+            settings.set_string ("expanded-category-path-ids", Helper.join_categories (pathSet));
         }
     }
 }
