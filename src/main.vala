@@ -88,10 +88,11 @@ int main (string[] args) {
                 }
 
                 Gtk.StyleContext.add_provider_for_screen (Gdk.Screen.get_default (), css_provider, Gtk.STYLE_PROVIDER_PRIORITY_USER);
-            } catch (PARSE_ERROR ex) {
-                error ("Failed to start: " + ex.message);
             } catch (GLib.Error ex) {
-                error ("Failed to start: " + ex.message);
+                // A missing window manager, an unreadable file or a bad
+                // stylesheet is a user error, not a crash.
+                printerr ("Failed to start: %s\n", ex.message);
+                Process.exit (1);
             }
         }
 
