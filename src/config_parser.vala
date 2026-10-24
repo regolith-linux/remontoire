@@ -28,8 +28,29 @@ public class ConfigParser {
   private string line_prefix;
 
   public ConfigParser(string config, string line_prefix) {
-    this.config = config;
+    this.config = to_utf8(config);
     this.line_prefix = line_prefix;
+  }
+
+  /**
+   * GTK can only show valid UTF-8, but config files are not always UTF-8.
+   * Read each line that is not valid UTF-8 as Latin-1 (ISO-8859-1), the
+   * usual legacy encoding, in which every byte is a character.
+   */
+  internal static string to_utf8(string config) {
+    if (config.validate()) return config;
+
+    string[] lines = config.split("\n");
+    for (int i = 0; i < lines.length; i++) {
+      if (!lines[i].validate()) {
+        try {
+          lines[i] = convert(lines[i], -1, "UTF-8", "ISO-8859-1");
+        } catch (ConvertError e) {
+          lines[i] = lines[i].make_valid();
+        }
+      }
+    }
+    return string.joinv("\n", lines);
   }
 
   public Map<string, ArrayList<Keybinding>> parse() throws PARSE_ERROR, GLib.Error, Grelier.I3_ERROR {    
